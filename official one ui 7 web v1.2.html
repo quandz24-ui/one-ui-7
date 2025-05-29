@@ -1,0 +1,236 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>one ui 7 by quandz24</title>
+    <style>
+      body {
+        margin: 0;
+        background: #111;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      .phone {
+        width: 300px;
+        height: 600px;
+        bottom: 10;
+        border: 16px solid #333;
+        border-radius: 36px;
+        background: #000;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 0 20px #000;
+        font-family: sans-serif;
+      }
+
+      .home-screen {
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0);
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        padding-bottom: 20px;
+        position: relative;
+      }
+      .wallpaper {
+        width: 100%;
+        height: 100%;
+        background: url("https://lh3.google.com/u/0/d/101icjHX5-gHBbt1fthxaVecUyydCnVna=w4097-h1797-iv1?auditContext=prefetch")
+          no-repeat center center fixed;
+        background-size: 74%;
+        scale: 137%;
+        transition: all 0.5s;
+      }
+      .wallpaper.open {
+        scale: 155%;
+      }
+
+      .app-icon {
+        margin-bottom: 15px;
+        width: 70px;
+        height: 70px;
+        background: url("https://www.androidauthority.com/wp-content/uploads/2023/09/Screenshot_20230912_204942_Settings-scaled-672w-1440h.jpg.webp")
+          no-repeat center/cover;
+        transition: background-color 0.2s ease, background-image 0.2s ease;
+        border-radius: 30px;
+        color: white;
+        font-weight: bold;
+        font-size: 16px;
+        display: flex;
+        justify-content: center;
+        align-items: end;
+        cursor: pointer;
+        position: absolute;
+        bottom: 50px;
+        left: calc(50% - 35px);
+        z-index: 95;
+        transition-property: width, height, left, bottom, border-radius,
+          font-size;
+        transition-timing-function: ease;
+      }
+      .app-icon::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: url("https://r1.community.samsung.com/t5/image/serverpage/image-id/8731424i18F1169EEF5FB204/image-size/large?v=v2&px=999")
+          no-repeat center/cover;
+        transition: opacity 0.15s ease;
+        z-index: 0;
+        border-radius: inherit;
+        opacity: 1;
+      }
+
+      .app-icon.moapp::before {
+        opacity: 0;
+      }
+      .app-icon.p1s {
+        border-radius: 1000px;
+      }
+      .app-icon.open {
+        width: 300px;
+        height: 605px;
+        left: 0;
+        bottom: 0;
+        border-radius: 16px;
+        font-size: 24px;
+        justify-content: center;
+        align-items: center;
+      }
+      .app-label {
+        position: absolute;
+        bottom: -17px;
+        left: 50%;
+        transform: translateX(-50%);
+        color: white;
+        font-size: 14px;
+        z-index: 95;
+        font-family: sans-serif;
+        opacity: 1;
+        transition: opacity 0.3s ease;
+      }
+      .back-button {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0, 0, 0, 0.6);
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 12px;
+        cursor: pointer;
+        font-size: 14px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        z-index: 9999;
+        pointer-events: none;
+      }
+
+      .back-button.visible {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      .app-click-area {
+        width: 70px;
+        height: 70px;
+        position: absolute;
+        bottom: 65px;
+        left: calc(50% - 35px);
+        z-index: 99;
+        cursor: pointer;
+        transition: opacity 0.3s ease;
+      }
+
+      .app-click-area.hidden {
+        opacity: 0;
+        pointer-events: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="phone">
+      <div class="home-screen">
+        <div class="wallpaper" id="wallpaper"></div>
+
+        <div class="app-icon" id="appIcon">
+          <div class="app-label">setting</div>
+        </div>
+        <div class="app-click-area" id="appClickArea"></div>
+        <button class="back-button" id="backButton">Home</button>
+      </div>
+    </div>
+    <script>
+      const ClickButton = document.getElementById("appClickArea");
+      const appIcon = document.getElementById("appIcon");
+      const backButton = document.getElementById("backButton");
+      const WallPaper = document.getElementById("wallpaper");
+
+      function resetInlineStyles() {
+        appIcon.style.transition = "";
+        appIcon.style.width = "";
+        appIcon.style.height = "";
+        appIcon.style.left = "";
+        appIcon.style.bottom = "";
+      }
+
+      ClickButton.addEventListener("click", () => {
+        // open
+        appIcon.style.transitionDuration =
+          "0.35s, 0.5s, 0.35s, 0.7s, 0.5s, 0.3s";
+        appIcon.classList.add("open");
+        backButton.classList.add("visible");
+        ClickButton.classList.add("hidden");
+
+        WallPaper.classList.add("open");
+        WallPaper.style.transition = "all 0.2";
+
+        setTimeout(() => {
+          appIcon.classList.add("moapp");
+        }, 100);
+      });
+      backButton.addEventListener("click", () => {
+        const isOpening = appIcon.classList.contains("open");
+        const computedWidth = parseFloat(getComputedStyle(appIcon).width);
+
+        if (isOpening && computedWidth < 280) {
+          // opening
+          appIcon.style.transition = "all 0.1s ease-out";
+          appIcon.style.width = "230px";
+          appIcon.style.height = "400px";
+          appIcon.style.left = "calc(50% - 115px)";
+          appIcon.style.bottom = "65px";
+          //appIcon.classList.add("p1s");
+          // close1
+          WallPaper.classList.remove("open");
+          setTimeout(() => {
+            resetInlineStyles();
+            appIcon.style.transitionDuration =
+              "0.25s, 0.2s, 0.25s, 0.2s, 0.3s, 0.2s";
+            appIcon.classList.remove("open");
+            ClickButton.classList.remove("hidden");
+
+            WallPaper.style.transition = "all 0.5";
+          }, 50);
+        } else {
+          // close2
+          appIcon.style.transitionDuration =
+            "0.45s, 0.45s, 0.45s, 0.45s, 0.5s, 0.3s";
+          appIcon.classList.remove("open");
+          ClickButton.classList.remove("hidden");
+
+          WallPaper.classList.remove("open");
+          WallPaper.style.transition = "all 0.5";
+        }
+        appIcon.classList.remove("p1s");
+        backButton.classList.remove("visible");
+        setTimeout(() => {
+          appIcon.classList.remove("moapp");
+        }, 100);
+      });
+    </script>
+  </body>
+</html>
